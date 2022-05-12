@@ -1,8 +1,9 @@
 import shutil
 import winreg
 import os.path
-from urllib.request import urlretrieve
+from urllib.request import urlretrieve, urlopen
 from inspect import cleandoc
+from Settings import version_path
 
 home = os.path.expandvars("%appdata%/MILC2")
 
@@ -47,8 +48,12 @@ if __name__ == "__main__":
         shutil.rmtree(home)
     os.mkdir(home)
 
-    urlretrieve("https://github.com/YoavShilon05/MILC2/releases/latest/download/MILC2.exe", f"{home}/MILC2.exe")
-    urlretrieve("https://github.com/YoavShilon05/MILC2/releases/latest/download/MILC2.ico", f"{home}/MILC2.ico")
+    latest = urlopen("https://github.com/YoavShilon05/MILC2/releases/latest").geturl()
+
+    urlretrieve(f"{latest}/download/MILC2.exe", f"{home}/MILC2.exe")
+    urlretrieve(f"{latest}/download/MILC2.ico", f"{home}/MILC2.ico")
+    with open(version_path, 'w') as f:
+        f.write(latest.split('/')[-1])
 
     print("\nCreating settings...")
 
