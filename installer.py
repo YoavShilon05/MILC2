@@ -43,12 +43,12 @@ if __name__ == "__main__":
 
     print("Downloading MILC2...")
 
-#    if os.path.isdir(home):
-#        shutil.rmtree(home)
-#    os.mkdir(home)
+    if os.path.isdir(home):
+        shutil.rmtree(home)
+    os.mkdir(home)
 
-    #urlretrieve("https://github.com/YoavShilon05/MILC2/releases/latest/download/MILC2.exe", f"{home}/MILC2.exe")
-    #urlretrieve("https://raw.githubusercontent.com/YoavShilon05/MILC2/main/MILC2.ico", f"{home}/MILC2.ico")
+    urlretrieve("https://github.com/YoavShilon05/MILC2/releases/latest/download/MILC2.exe", f"{home}/MILC2.exe")
+    urlretrieve("https://github.com/YoavShilon05/MILC2/releases/latest/download/MILC2.ico", f"{home}/MILC2.ico")
 
     print("\nCreating settings...")
 
@@ -59,7 +59,7 @@ if __name__ == "__main__":
     if not os.path.isdir(root):
         os.mkdir(root)
     name = get_valid_input("Your name", lambda o: ' ' in o, "Spaces in names unsupported")
-    ip = get_input("SSH IP")
+    ip = get_input("Remote IP")
 
     with open(f"{home}/settings.ini", 'w') as f:
         f.write(cleandoc(f"""
