@@ -4,8 +4,9 @@ import winreg
 
 from AssiNet import *
 import socket
-from Settings import root, ip, username, icon_path
+from Settings import root, ip, username, version_path, executable_path
 from Toaster import notify
+from urllib.request import urlretrieve, urlopen
 
 class Client:
 
@@ -48,8 +49,16 @@ class Client:
 
     @staticmethod
     def install_updates():
-        #about to be implemented
-        pass
+
+        lastest = urlopen("https://github.com/YoavShilon05/MILC2/releases/latest").geturl()
+
+        with open(version_path, 'r') as f:
+            if f.read() != lastest:
+                urlretrieve("https://github.com/YoavShilon05/MILC2/releases/latest/download/MILC2.exe", executable_path)
+
+        with open(version_path, 'w') as f:
+            f.write(lastest.split('/')[-1])
+
 
     def __init__(self):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
