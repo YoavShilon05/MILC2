@@ -1,8 +1,10 @@
+import os
 import sys
 import logging
 import Sender
+import updater
 from Tray import Tray
-from Settings import log_path
+from Settings import log_path, updater_path
 
 logging.basicConfig(format='[%(asctime)s] %(levelname)s: %(message)s', filename=log_path, filemode='w')
 
@@ -14,11 +16,14 @@ if __name__ == "__main__":
                           "running it without one will surely cause it to fail critically. Please take the necessary "
                           "steps to make sure such accidents will not take place next time.")
 
-    match (sys.argv[1]):
+    match sys.argv[1]:
         case "listen":
+            if len(sys.argv) < 2 or sys.argv[2] != "nocheck":
+                update_available, version = updater.check_for_updates()
+                if update_available:
+                    os.execv(updater_path, [version])
             with Tray() as tray:
                 tray.run()
-
 
         case "send":
             target = sys.argv[2]

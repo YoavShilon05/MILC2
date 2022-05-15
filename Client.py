@@ -49,27 +49,6 @@ class Client:
             add("Directory", u)
             add("Directory\\Background", u, '%w')
 
-    @staticmethod
-    def check_for_updates() -> bool:
-        logging.info("Checking for updates")
-        lastest = urlopen("https://github.com/YoavShilon05/MILC2/releases/latest").geturl()
-
-        with open(version_path, 'r') as f:
-            return f.read() != lastest
-
-    @staticmethod
-    def install_updates():
-        logging.info("Installing updates")
-        lastest = urlopen("https://github.com/YoavShilon05/MILC2/releases/latest").geturl()
-
-        with open(version_path, 'r') as f:
-            if f.read() != lastest:
-                urlretrieve("https://github.com/YoavShilon05/MILC2/releases/latest/download/MILC2.exe", executable_path)
-
-        with open(version_path, 'w') as f:
-            f.write(lastest.split('/')[-1])
-
-
     def __init__(self):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.client.connect((ip, PORT))
