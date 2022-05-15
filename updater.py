@@ -3,6 +3,8 @@ import os
 import sys
 from urllib.request import urlopen, urlretrieve
 from Settings import version_path, executable_path
+from Toaster import notify
+
 
 def check_for_updates() -> (bool, str):
     """
@@ -30,6 +32,8 @@ def main():
 
     with open(version_path, 'w') as f:
         f.write(sys.argv[1])
+
+    notify("updates for MILC2 installed!")
 
     os.execv(executable_path, ["listen", "nocheck"])
 

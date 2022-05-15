@@ -6,10 +6,11 @@ import pystray
 from pystray import MenuItem as Item
 from pystray import Menu
 from PIL import Image
-from Settings import icon_path, root, settings_path, executable_path, log_path
+from Settings import icon_path, root, settings_path, executable_path, log_path, updater_path
 from Client import Client
 import shutil
-
+from updater import check_for_updates
+from Toaster import notify
 
 class Tray():
 
@@ -45,15 +46,17 @@ class Tray():
         os.system(f"start {settings_path}")
 
     def install_updates(self):
-        up_to_date = Client.check_for_updates()
+        up_to_date, version = check_for_updates()
         if not up_to_date:
             logging.info("Client not up to date! installing updates, copying logs and quitting")
+            notify("Installing updates...")
 
             # copy old log to new file
             shutil.copyfile(log_path, log_path.replace("log.log", "log_old.log"))
+            os.execv(updater_path, [version])
 
-            Client.install_updates()
-            self.quit()
+        else:
+            notify("your MILC2 program is up to date!")
 
     def restart(self):
         logging.info(f"Restarting")
