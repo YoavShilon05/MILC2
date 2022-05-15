@@ -1,7 +1,11 @@
 import sys
-
+import logging
 import Sender
-from Client import Client
+from Tray import Tray
+from Settings import log_path
+
+logging.basicConfig(format='[%(asctime)s] %(levelname)s: %(message)s', filename=log_path, filemode='w')
+
 
 if __name__ == "__main__":
 
@@ -12,15 +16,15 @@ if __name__ == "__main__":
 
     match (sys.argv[1]):
         case "listen":
-            Client.install_updates()
-            Client.update_users()
-            with Client() as client:
-                client.listen()
+            with Tray() as tray:
+                tray.run()
+
 
         case "send":
             target = sys.argv[2]
             path = sys.argv[3]
 
+            logging.info(f"Sending {path} to {target}")
             with Sender.Sender() as sender:
                 sender.send(path, target)
 

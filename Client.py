@@ -1,3 +1,4 @@
+import logging
 import os
 import pickle
 import winreg
@@ -12,6 +13,7 @@ class Client:
 
     @staticmethod
     def update_users():
+        logging.info("Updating users")
         def delete_subkeys(key0, current_key):
             # stolen from https://stackoverflow.com/questions/38205784/python-how-to-delete-registry-key-and-subkeys-from-hklm-getting-error-5
             with (winreg.OpenKey(key0, current_key, 0, winreg.KEY_ALL_ACCESS)) as key:
@@ -48,8 +50,16 @@ class Client:
             add("Directory\\Background", u, '%w')
 
     @staticmethod
-    def install_updates():
+    def check_for_updates() -> bool:
+        logging.info("Checking for updates")
+        lastest = urlopen("https://github.com/YoavShilon05/MILC2/releases/latest").geturl()
 
+        with open(version_path, 'r') as f:
+            return f.read() != lastest
+
+    @staticmethod
+    def install_updates():
+        logging.info("Installing updates")
         lastest = urlopen("https://github.com/YoavShilon05/MILC2/releases/latest").geturl()
 
         with open(version_path, 'r') as f:
