@@ -1,6 +1,7 @@
 import logging
 import os
 import sys
+import threading
 
 import pystray
 from pystray import MenuItem as Item
@@ -20,10 +21,10 @@ class Tray():
 
         self.tray = pystray.Icon("MILC", Image.open(icon_path), "Hi mom, please press this icon to open up the "
                                                                 "options menu <3",
-                                 Menu(Item("Update user list", self.update_users),
-                                      Item("Open root folder", self.open_root),
+                                 Menu(Item("Open root folder", self.open_root),
                                       Item("Settings", self.settings),
                                       Item("Check for updates", self.install_updates),
+                                      Item("Update user list", self.update_users),
                                       Item("Restart", self.restart),
                                       Item("Leave Exit", self.quit)))
 
@@ -46,14 +47,14 @@ class Tray():
         os.system(f"start {settings_path}")
 
     def install_updates(self):
-        up_to_date, version = check_for_updates()
-        if not up_to_date:
+        update_available, version = check_for_updates()
+        if update_available:
             logging.info("Client not up to date! installing updates, copying logs and quitting")
             notify("Installing updates...")
 
             # copy old log to new file
             shutil.copyfile(log_path, log_path.replace("log.log", "log_old.log"))
-            os.execv(updater_path, [version])
+            os.execv(updater_path, [updater_path, version])
 
         else:
             notify("your MILC2 program is up to date!")
@@ -63,11 +64,17 @@ class Tray():
 
         # copy old log to new file
         shutil.copyfile(log_path, log_path.replace("log.log", "log_old.log"))
+        self.tray.stop()
 
         os.execv(executable_path, sys.argv)
 
     def quit(self):
         logging.info(f"Quitting")
+
+        # copy old log to new file
+        shutil.copyfile(log_path, log_path.replace("log.log", "log_old.log"))
+        self.tray.stop()
+
         sys.exit(0)
 
     def run(self):
@@ -76,4 +83,4 @@ class Tray():
 
     def show(self):
         logging.info(f"Showing tray")
-        self.tray.run()
+        threading.Thread(target=self.tray.run).start()

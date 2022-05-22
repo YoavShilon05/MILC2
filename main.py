@@ -6,7 +6,8 @@ import updater
 from Tray import Tray
 from Settings import log_path, updater_path
 
-logging.basicConfig(format='[%(asctime)s] %(levelname)s: %(message)s', filename=log_path, filemode='w')
+logging.basicConfig(format='[%(asctime)s] %(levelname)s: %(message)s', filename=log_path, filemode='w', level=logging.INFO)
+logging.getLogger().addHandler(logging.StreamHandler())  # add console output
 
 
 if __name__ == "__main__":
@@ -18,11 +19,12 @@ if __name__ == "__main__":
 
     match sys.argv[1]:
         case "listen":
-            if len(sys.argv) < 2 or sys.argv[2] != "nocheck":
+            if len(sys.argv) < 3 or sys.argv[2] != "nocheck":
                 update_available, version = updater.check_for_updates()
                 if update_available:
-                    os.execv(updater_path, [version])
+                    os.execv(updater_path, [updater_path, version])
             with Tray() as tray:
+                tray.show()
                 tray.run()
 
         case "send":
