@@ -84,4 +84,4 @@ class Tray():
 
     def show(self):
         logging.info(f"Showing tray")
-        threading.Thread(target=self.tray.run).start()
+        threading.Thread(target=self.tray.run, daemon=True).start()
