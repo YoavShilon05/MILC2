@@ -75,7 +75,8 @@ class Tray():
         shutil.copyfile(log_path, log_path.replace("log.log", "log_old.log"))
         self.tray.stop()
 
-        sys.exit(0)
+        # what the actual fuck is that
+        os._exit(0)
 
     def run(self):
         logging.info(f"Starting client")
