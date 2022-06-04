@@ -34,7 +34,9 @@ def main():
 
     logging.info("Installing updates")
 
-    urlretrieve(f"https://github.com/YoavShilon05/MILC2/releases/tag/{sys.argv[1]}/download/MILC2.exe", executable_path)
+    latest = urlopen("https://github.com/YoavShilon05/MILC2/releases/latest").geturl()
+    latest = latest.replace("/tag/", "/download/")
+    urlretrieve(f"{latest}/MILC2.exe", executable_path)
 
     logging.info("Finished installing updates.")
     with open(version_path, 'w') as f:
