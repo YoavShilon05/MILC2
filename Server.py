@@ -29,7 +29,7 @@ class Server:
 
             match cmd:
                 case "SEND":
-                    threading.Thread(target=self.handle_sender, args=[client], daemon=True).start()
+                    threading.Thread(target=self.handle_sender, args=[client]).start()
                 case "GET_USERS":
                     users = list(connections.keys())
                     logging.info(f"users list requested, sending {users}")
