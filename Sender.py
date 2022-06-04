@@ -1,10 +1,20 @@
-import glob
+# import glob
 import os
 import pickle
+import sys
 
 from AssiNet import *
 from Settings import ip, username
 from Toaster import notify
+
+def glob(path): # this name has no meaning!
+    for file in os.listdir(path):
+        full_path = os.path.join(path, file)
+        if os.path.isfile(full_path):
+            yield full_path
+        else:
+            yield from glob(full_path)
+
 
 class Sender:
 
@@ -16,8 +26,8 @@ class Sender:
 
     def send(self, path, target):
         if os.path.isdir(path):  # kusomo
-            tree = list(map(lambda s: s.replace('\\', '/'), glob.glob(path + "/**/*.*", recursive=True)))
-            send_files(self.sender, username, target, tree, path)
+            files = [x for x in glob(path)]
+            send_files(self.sender, username, target, files, path)
 
 
         elif os.path.isfile(path):
