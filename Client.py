@@ -28,7 +28,7 @@ class Client:
         def add(path, u, arg='%1'):
             with (winreg.CreateKey(winreg.HKEY_CLASSES_ROOT, rf"{path}\shell\MILC2\shell\SendTo{u}")) as key:
                 winreg.SetValue(key, "", winreg.REG_SZ, f"Send to {u}")
-                winreg.SetValueEx(key, "Icon", None, winreg.REG_EXPAND_SZ, rf"%appdata%\MILC2\MILC.ico")
+                winreg.SetValueEx(key, "Icon", None, winreg.REG_EXPAND_SZ, rf"%appdata%\MILC2\MILC2.ico")
             with (
             winreg.CreateKey(winreg.HKEY_CLASSES_ROOT, rf"{path}\shell\MILC2\shell\SendTo{u}\command")) as key:
                 winreg.SetValueEx(key, "", None, winreg.REG_EXPAND_SZ,
