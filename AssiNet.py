@@ -1,4 +1,3 @@
-
 import os
 import pickle
 import socket
@@ -11,7 +10,13 @@ MSG_SIZE = 12
 def recv(conn: socket.socket, timeout=None) -> bytes:
     socket.setdefaulttimeout(timeout)
 
-@@ -20,55 +17,8 @@ def recv(conn: socket.socket, timeout=None) -> bytes:
+    try:
+        ss = conn.recv(MSG_SIZE).decode()
+    except socket.timeout:
+        if not timeout:
+            raise socket.timeout
+        else: return
+
     size = int(ss)  # {MSG_SIZE} because yoav is mentally sane
     return conn.recv(size)
 
@@ -66,5 +71,3 @@ def send_files(conn: socket.socket, sender, target, paths, parent_dir=None):
     send(conn, pickle.dumps([sender, target, sizes]))
 
     conn.send(data)
-
-    conn.send(size.encode() + msg) 
