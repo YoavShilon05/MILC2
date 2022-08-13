@@ -5,18 +5,20 @@ TODO:
 - hebrew?
 - don't request admin on send
 - for yoav: make users not disappear
+- the updater "doesn't send notifications"
+
+"DONE":
+- send crash error on discord
+- log stuff
 
 DONE:
-- send crash error on discord
 - updater
-- log stuff
 - make updating users possible without restarting MILC2
 - but also make it easier to restart MILC2 than to have to kill it and then launch it through tasks
 - basically make tray is what ori is trying to say here 😢
 - also make it so that you can launch MILC2 through search
 - server doesn't work after crash
 """
-
 import os
 import threading
 import time
@@ -47,7 +49,7 @@ class Server:
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server.bind(ADDR)
         self.server.listen()
-        logging.info("Server is listening...")
+        logging.info(f"Server is listening on address {ADDR}...")
 
     def update(self):
 
@@ -55,15 +57,18 @@ class Server:
             client, client_ip = self.server.accept()
             logging.info(f"{client_ip} connected")
             cmd = recv(client).decode()
+            logging.info(f"received command {cmd}")
 
             match cmd:
                 case "SEND":
                     t = threading.Thread(target=self.handle_sender, args=[client])
                     t.start()
+                    logging.info("started new handle_sender thread due to SEND")
                 case "GET_USERS":
                     users = list(connections.keys())
                     logging.info(f"users list requested, sending {users}")
                     send(client, pickle.dumps(users))
+                    logging.info("users list sent successfully")
                 case _:
                     name = cmd # client connected, username was sent
                     if name in connections:
@@ -74,19 +79,26 @@ class Server:
                         connections[name] = [client]
 
     def handle_sender(self, client : socket.socket):
-
+        logging.info("entered handle_sender thread")
         def send_status(status):
             try:
+                logging.info(f"trying to send status {status}")
                 send(client, status.encode())
-            except ConnectionError:
+                logging.info("sent status successfully")
+            except ConnectionError as e:
+                logging.warning(f"unable to send status, error: {e}. the code just passes so this might be okay")
                 pass
 
         try:
-
+            peer = client.getpeername()
+            logging.info(f"waiting to receive header from client {peer}")
             header = pickle.loads(recv(client))
+            logging.info(f"got header {header} from client {peer}")
 
             sender_username, target_username, sizes = header
-            logging.info(f"{sender_username} sent {target_username} {sizes} bytes of files")
+            logging.info(f"{sender_username} sent {target_username} (client {peer}) {sizes} bytes of files")
+
+            logging.info(f"checking whether {target_username} is online")
 
             if target_username not in connections or len(connections[target_username]) == 0:
                 logging.info(f"{target_username} was offline, send aborted")
@@ -95,17 +107,26 @@ class Server:
 
             targets = connections[target_username]
 
+            logging.info(f"found connection for {target_username} in memory, checking if active")
 
             found = False
-            for target in targets:
+            for i, target in enumerate(targets):
                 try:
+                    logging.info(f"trying to ping target number {i} of {target_username}")
                     send(target, b"PING")
-                    assert recv(target, SUICIDE_TIMEOUT) == b"PONG"
-                except ConnectionError or AssertionError:
+                    ping_answer = recv(target, SUICIDE_TIMEOUT)
+                    assert ping_answer == b"PONG";
+                except ConnectionError:
                     connections[target_username].remove(target)
+                    logging.info(f"target number {i} of {target_username} did not answer, removing from memory")
                     continue
-
+                except AssertionError:
+                    connections[target_username].remove(target)
+                    # noinspection PyUnboundLocalVariable
+                    logging.info(f"target number {i} of {target_username} answered '{ping_answer.decode()}' instead of 'PONG', removing from memory")
+                logging.info(f"target number {i} of {target_username} was active, sending header: {[sender_username, sizes]}")
                 send(target, pickle.dumps([sender_username, sizes]))
+                logging.info("sent header successfully")
                 found = True
 
             if not found:
@@ -117,6 +138,7 @@ class Server:
 
             size_sum = 0
             total_size = sum([s[1] for s in sizes])
+            logging.info(f"total size of all packets being sent from {sender_username} to {target_username} is {total_size}")
             while size_sum < total_size:
                 packet = client.recv(4096)
 
@@ -130,7 +152,7 @@ class Server:
                         send_status("DISCONNECT")
                         return
 
-            logging.info(f"files sent successfully from {sender_username} to {target_username}")
+            logging.info(f"files sent successfully from {sender_username} to {target_username}, actual size of packets was {size_sum}")
 
             send_status("OK")
 

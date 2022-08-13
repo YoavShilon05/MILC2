@@ -16,7 +16,9 @@ from Toaster import notify
 class Tray():
 
     def __init__(self):
+        logging.info("Initiating Tray...")
         self.client = Client()
+        logging.info("Updating users through Tray...")
         self.update_users()
 
         self.tray = pystray.Icon("MILC", Image.open(icon_path), "Hi mom, please press this icon to open up the "
@@ -39,11 +41,11 @@ class Tray():
         Client.update_users()
 
     def open_root(self):
-        logging.info(f"Opening root")
+        logging.info(f"Opening root folder, {root=}")
         os.system(f"explorer {root}")
 
     def settings(self):
-        logging.info(f"Opening settings")
+        logging.info(f"Opening settings, {settings_path=}")
         os.system(f"start {settings_path}")
 
     def install_updates(self):
@@ -54,34 +56,38 @@ class Tray():
 
             # copy old log to new file
             shutil.copyfile(log_path, log_path.replace("log.log", "log_old.log"))
+            logging.info("Rolled logs, quitting...")
             os.execv(updater_path, [updater_path, version])
 
         else:
             notify("your MILC2 program is up to date!")
 
     def restart(self):
-        logging.info(f"Restarting")
+        logging.info(f"Restarting by user request...")
 
         # copy old log to new file
         shutil.copyfile(log_path, log_path.replace("log.log", "log_old.log"))
+        logging.info("Rolled logs")
         self.tray.stop()
 
         os.execv(executable_path, sys.argv)
 
     def quit(self):
-        logging.info(f"Quitting")
+        logging.info(f"Quitting by user request...")
 
         # copy old log to new file
         shutil.copyfile(log_path, log_path.replace("log.log", "log_old.log"))
+        logging.info("Rolled logs")
+
         self.tray.stop()
 
         # what the actual fuck is that
         os._exit(0)
 
     def run(self):
-        logging.info(f"Starting client")
+        logging.info(f"Starting client...")
         self.client.listen()
 
     def show(self):
-        logging.info(f"Showing tray")
+        logging.info(f"Showing tray...")
         threading.Thread(target=self.tray.run, daemon=True).start()

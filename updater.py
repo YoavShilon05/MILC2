@@ -10,14 +10,18 @@ def check_for_updates() -> (bool, str):
     """
     checks if any updates are available
     """
+    logging.info("Checking for updates...")
     latest = urlopen("https://github.com/YoavShilon05/MILC2/releases/latest").geturl()
-    ver = latest.split('/')[-1]
+    latest_ver = latest.split('/')[-1]
+    logging.info(f"Latest version: {latest_ver}")
     with open(version_path, 'r') as f:
-        if f.read() != ver:
-            logging.info(f"Update {ver} available")
-            return True, ver
+        current_ver = f.read()
+        logging.info(f"Current MILC2 version: {current_ver}")
+        if current_ver != latest_ver:
+            logging.info(f"MILC2 Update available")
+            return True, latest_ver
 
-        logging.info(f"MILC is up to date,  {ver}")
+        logging.info(f"MILC2 is up to date")
         return False, ""
 
 def main():
@@ -33,6 +37,7 @@ def main():
             f"passed to this program any more. Arguments got: {sys.argv}")
 
     logging.info("Installing updates")
+    notify("Installing updates")
 
     latest = urlopen("https://github.com/YoavShilon05/MILC2/releases/latest").geturl()
     latest = latest.replace("/tag/", "/download/")
