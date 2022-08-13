@@ -6,11 +6,12 @@ import updater
 from Tray import Tray
 from Settings import log_path, updater_path
 
-logging.basicConfig(format='[%(asctime)s] %(levelname)s: %(message)s', filename=log_path, filemode='w', level=logging.INFO)
-logging.getLogger().addHandler(logging.StreamHandler())  # add console output
-
 
 if __name__ == "__main__":
+
+    filemode = 'w' if sys.argv[1] == "listen" else 'a'
+    logging.basicConfig(format='[%(asctime)s] %(levelname)s: %(message)s', filename=log_path, filemode=filemode, level=logging.INFO)
+    logging.getLogger().addHandler(logging.StreamHandler())  # add console output
 
     logging.info("Running MILC2...")
     logging.info(f"Enter arguments: {sys.argv}")

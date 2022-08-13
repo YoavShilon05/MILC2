@@ -1,17 +1,16 @@
 """
 TODO:
-- user is offline when they aren't
 - uninstaller
 - hebrew?
 - don't request admin on send
-- for yoav: make users not disappear
-- the updater "doesn't send notifications"
 
 "DONE":
 - send crash error on discord
-- log stuff
 
 DONE:
+- log stuff
+- the updater "doesn't send notifications"
+- user is offline when they aren't
 - updater
 - make updating users possible without restarting MILC2
 - but also make it easier to restart MILC2 than to have to kill it and then launch it through tasks
@@ -110,15 +109,16 @@ class Server:
             logging.info(f"found connection for {target_username} in memory, checking if active")
 
             found = False
-            for i, target in enumerate(targets):
+            for i, target in enumerate(targets.copy()):
                 try:
                     logging.info(f"trying to ping target number {i} of {target_username}")
                     send(target, b"PING")
                     ping_answer = recv(target, SUICIDE_TIMEOUT)
                     assert ping_answer == b"PONG";
-                except ConnectionError:
+                except ConnectionError as e:
                     connections[target_username].remove(target)
                     logging.info(f"target number {i} of {target_username} did not answer, removing from memory")
+                    logging.warning(e)
                     continue
                 except AssertionError:
                     connections[target_username].remove(target)

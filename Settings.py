@@ -8,6 +8,7 @@ version_path = os.path.expandvars("%appdata%/MILC2/version.txt")
 executable_path = os.path.expandvars("%appdata%/MILC2/MILC2.exe")
 log_path = os.path.expandvars("%appdata%/MILC2/log.log")
 updater_path = os.path.expandvars("%appdata%/MILC2/Updater.exe")
+update_users_path = os.path.expandvars("%appdata%/MILC2/UpdateUsers.exe")
 # settings_path = os.path.expandvars("Settings.ini")
 config.read(settings_path)
 

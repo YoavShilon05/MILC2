@@ -55,6 +55,8 @@ if __name__ == "__main__":
     latest = latest.replace("/tag/", "/download/")
     urlretrieve(f"{latest}/MILC2.exe", f"{home}/MILC2.exe")
     urlretrieve(f"{latest}/MILC2.ico", f"{home}/MILC2.ico")
+    urlretrieve(f"{latest}/Updater.exe", f"{home}/Updater.exe")
+    urlretrieve(f"{latest}/UpdateUsers.exe", f"{home}/UpdateUsers.exe")
     with open(os.path.expandvars("%appdata%/MILC2/version.txt"), 'w') as f:
         f.write(latest.split('/')[-1])
 

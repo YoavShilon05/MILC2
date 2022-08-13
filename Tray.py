@@ -1,5 +1,6 @@
 import logging
 import os
+import subprocess
 import sys
 import threading
 
@@ -7,7 +8,7 @@ import pystray
 from pystray import MenuItem as Item
 from pystray import Menu
 from PIL import Image
-from Settings import icon_path, root, settings_path, executable_path, log_path, updater_path
+from Settings import icon_path, root, settings_path, executable_path, log_path, updater_path, update_users_path
 from Client import Client
 import shutil
 from updater import check_for_updates
@@ -38,7 +39,7 @@ class Tray():
         self.tray.stop()
 
     def update_users(self):
-        Client.update_users()
+        subprocess.run(update_users_path)
 
     def open_root(self):
         logging.info(f"Opening root folder, {root=}")
