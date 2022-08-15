@@ -1,5 +1,7 @@
 import winreg
 from AssiNet import *
+from Settings import ip
+
 
 def update_users():
     logging.info("Updating users")
