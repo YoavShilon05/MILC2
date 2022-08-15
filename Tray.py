@@ -1,6 +1,5 @@
 import logging
 import os
-import subprocess
 import sys
 import threading
 
@@ -40,7 +39,7 @@ class Tray():
 
     @staticmethod
     def update_users():
-        subprocess.run(f"runas /user:Administrator {update_users_path}")
+        os.system(update_users_path)
 
     @staticmethod
     def open_root():

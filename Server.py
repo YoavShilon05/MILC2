@@ -2,6 +2,7 @@
 TODO:
 - uninstaller
 - massive test
+- feedback when server isn't running
 
 "DONE":
 - send crash error on discord
