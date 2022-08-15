@@ -54,3 +54,5 @@ def update_users():
         add("Directory", u)
         add("Directory\\Background", u, '%w')
         logging.info(f"done adding {u} to the context menu")
+
+update_users()

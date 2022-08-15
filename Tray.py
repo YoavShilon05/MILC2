@@ -38,18 +38,22 @@ class Tray():
         self.client.__exit__(exc_type, exc_val, exc_tb)
         self.tray.stop()
 
-    def update_users(self):
-        subprocess.run(update_users_path)
+    @staticmethod
+    def update_users():
+        subprocess.run(f"runas /user:Administrator {update_users_path}")
 
-    def open_root(self):
+    @staticmethod
+    def open_root():
         logging.info(f"Opening root folder, {root=}")
         os.system(f"explorer {root}")
 
-    def settings(self):
+    @staticmethod
+    def settings():
         logging.info(f"Opening settings, {settings_path=}")
         os.system(f"start {settings_path}")
 
-    def install_updates(self):
+    @staticmethod
+    def install_updates():
         update_available, version = check_for_updates()
         if update_available:
             logging.info("Client not up to date! installing updates, copying logs and quitting")

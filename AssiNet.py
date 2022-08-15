@@ -27,9 +27,9 @@ def recv_files(conn:socket.socket):
 
     logging.info("attempting to receive header")
     header = recv(conn)
-    logging.info(f"received header {header.decode()}")
+    logging.info(f"received header")
     sender, sizes = pickle.loads(header)
-    logging.info(f"{sender} sent {sizes}")
+    logging.info(f"header contents: {sender} sent {sizes}")
     ### FILES
 
     data = b''

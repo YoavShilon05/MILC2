@@ -1,13 +1,13 @@
 """
 TODO:
 - uninstaller
-- hebrew?
-- don't request admin on send
+- massive test
 
 "DONE":
 - send crash error on discord
 
 DONE:
+- hebrew?
 - log stuff
 - the updater "doesn't send notifications"
 - user is offline when they aren't
@@ -17,6 +17,8 @@ DONE:
 - basically make tray is what ori is trying to say here 😢
 - also make it so that you can launch MILC2 through search
 - server doesn't work after crash
+- don't request admin on send
+- installer doesn't work when launching without cmd :(
 """
 import os
 import threading

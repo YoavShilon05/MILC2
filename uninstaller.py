@@ -17,4 +17,9 @@ def delete_subkeys(key0, current_key):
 
 
 shutil.rmtree(home)
+os.remove(r"C:\ProgramData\Microsoft\Windows\Start Menu\Programs\MILC2.lnk")
+os.system("schtasks /remove /tn MILC2")
 
+delete_subkeys(winreg.HKEY_CLASSES_ROOT, r"*\shell\MILC2\shell")
+delete_subkeys(winreg.HKEY_CLASSES_ROOT, r"Directory\shell\MILC2\shell")
+delete_subkeys(winreg.HKEY_CLASSES_ROOT, r"Directory\Background\shell\MILC2\shell")
